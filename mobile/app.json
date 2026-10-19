@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "Tongpin",
+    "slug": "tongpin",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.youlai.tongpin"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#FDFCF8",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.youlai.tongpin"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-sqlite",
+      "expo-localization"
+    ],
+    "scheme": "tongpin",
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
