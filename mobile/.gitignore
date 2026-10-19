@@ -39,3 +39,7 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Firebase 服务账号私钥（上传到 expo.dev 用，绝不能提交）
+*firebase-adminsdk*.json
+service-account*.json

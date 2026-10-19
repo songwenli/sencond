@@ -89,6 +89,11 @@ const en = {
     firstMessageHint: 'Introduce yourself — you can send one message before they reply.',
     deletedUser: 'Deleted user',
   },
+  push: {
+    channelDefault: 'General',
+    channelMatches: 'New matches',
+    channelMessages: 'Messages',
+  },
   placeholder: {
     comingSoon: 'This screen is part of the next milestone.',
   },

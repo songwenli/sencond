@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { supabase } from '@/shared/api/supabase';
 import i18n from '@/shared/i18n';
+import { unregisterPushToken } from '@/shared/push/usePush';
 
 /**
  * 开发阶段先用「邮箱 + 6 位验证码」登录，Supabase 开箱即用。
@@ -45,4 +46,7 @@ export function useSkipSignIn() {
   });
 }
 
-export const signOut = () => supabase.auth.signOut();
+export async function signOut() {
+  await unregisterPushToken(); // 退出后这台设备不再收到这个账号的推送
+  await supabase.auth.signOut();
+}

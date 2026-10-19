@@ -534,6 +534,7 @@ export type Database = {
           id: number
           intent_id: string
           last_error: string | null
+          locked_at: string | null
           reason: string
           run_after: string
           status: Database["public"]["Enums"]["job_status"]
@@ -545,6 +546,7 @@ export type Database = {
           id?: never
           intent_id: string
           last_error?: string | null
+          locked_at?: string | null
           reason: string
           run_after?: string
           status?: Database["public"]["Enums"]["job_status"]
@@ -556,6 +558,7 @@ export type Database = {
           id?: never
           intent_id?: string
           last_error?: string | null
+          locked_at?: string | null
           reason?: string
           run_after?: string
           status?: Database["public"]["Enums"]["job_status"]
@@ -612,6 +615,53 @@ export type Database = {
           {
             foreignKeyName: "messages_sender_id_fkey"
             columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          attempts: number
+          created_at: string
+          id: number
+          kind: Database["public"]["Enums"]["notification_kind"]
+          last_error: string | null
+          locked_at: string | null
+          payload: Json
+          sent_at: string | null
+          status: Database["public"]["Enums"]["notification_status"]
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          id?: never
+          kind: Database["public"]["Enums"]["notification_kind"]
+          last_error?: string | null
+          locked_at?: string | null
+          payload: Json
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["notification_status"]
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          id?: never
+          kind?: Database["public"]["Enums"]["notification_kind"]
+          last_error?: string | null
+          locked_at?: string | null
+          payload?: Json
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["notification_status"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -764,6 +814,7 @@ export type Database = {
           id: number
           intent_id: string
           last_error: string | null
+          locked_at: string | null
           reason: string
           run_after: string
           status: Database["public"]["Enums"]["job_status"]
@@ -774,6 +825,22 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      claim_notifications: {
+        Args: { p_limit?: number }
+        Returns: {
+          conversation_id: string
+          id: number
+          kind: Database["public"]["Enums"]["notification_kind"]
+          locale: string
+          match_id: string
+          match_reason: Json
+          message_body: string
+          other_intent: string
+          sender_name: string
+          tokens: string[]
+          user_id: string
+        }[]
       }
       create_pair_match: {
         Args: {
@@ -787,6 +854,14 @@ export type Database = {
         Returns: string
       }
       feature_enabled: { Args: { p_key: string }; Returns: boolean }
+      finish_matching_job: {
+        Args: { p_error?: string; p_job_id: number }
+        Returns: undefined
+      }
+      finish_notification: {
+        Args: { p_error?: string; p_id: number }
+        Returns: undefined
+      }
       is_blocked_between: { Args: { a: string; b: string }; Returns: boolean }
       is_conversation_member: {
         Args: { p_conversation_id: string }
@@ -794,6 +869,7 @@ export type Database = {
       }
       is_match_participant: { Args: { p_match_id: string }; Returns: boolean }
       join_group: { Args: { p_match_id: string }; Returns: string }
+      kick_push_sender: { Args: never; Returns: undefined }
       leave_group: { Args: { p_group_id: string }; Returns: undefined }
       mark_conversation_read: {
         Args: { p_conversation_id: string }
@@ -815,8 +891,36 @@ export type Database = {
           owner_id: string
         }[]
       }
+      match_candidates: {
+        Args: {
+          p_intent_id: string
+          p_limit?: number
+          p_min_score?: number
+          p_model: string
+        }
+        Returns: {
+          complementary_score: number
+          intent_id: string
+          kind: Database["public"]["Enums"]["intent_kind"]
+          owner_id: string
+          score: number
+          similar_score: number
+        }[]
+      }
+      register_push_token: {
+        Args: {
+          p_platform: Database["public"]["Enums"]["push_platform"]
+          p_token: string
+        }
+        Returns: undefined
+      }
       skip_match: { Args: { p_match_id: string }; Returns: undefined }
       start_conversation: { Args: { p_match_id: string }; Returns: string }
+      trigger_match_worker: { Args: never; Returns: undefined }
+      verify_match_worker_secret: {
+        Args: { p_secret: string }
+        Returns: boolean
+      }
     }
     Enums: {
       conversation_kind: "direct" | "group"
@@ -829,6 +933,8 @@ export type Database = {
       match_kind: "pair" | "group"
       match_strength: "strong" | "weak"
       moderation_status: "pending" | "approved" | "flagged" | "rejected"
+      notification_kind: "new_match" | "new_message"
+      notification_status: "queued" | "sending" | "sent" | "failed"
       participant_status:
         | "pending"
         | "skipped"
@@ -975,6 +1081,8 @@ export const Constants = {
       match_kind: ["pair", "group"],
       match_strength: ["strong", "weak"],
       moderation_status: ["pending", "approved", "flagged", "rejected"],
+      notification_kind: ["new_match", "new_message"],
+      notification_status: ["queued", "sending", "sent", "failed"],
       participant_status: ["pending", "skipped", "contacted", "joined", "left"],
       push_platform: ["ios", "android"],
       report_status: ["open", "reviewing", "resolved", "dismissed"],

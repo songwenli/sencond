@@ -91,6 +91,11 @@ const zhHans: Translation = {
     firstMessageHint: '介绍一下自己吧，对方回复前只能先发一条。',
     deletedUser: '已注销用户',
   },
+  push: {
+    channelDefault: '通用',
+    channelMatches: '新匹配',
+    channelMessages: '消息',
+  },
   placeholder: {
     comingSoon: '这个页面在下一个里程碑实现。',
   },

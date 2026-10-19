@@ -9,6 +9,7 @@ import { Avatar, Loading, Screen, Text } from '@/shared/ui';
 import { palette, radius, space } from '@/shared/theme/tokens';
 import { dbErrorCode } from '@/shared/api/supabase';
 import { useUserId } from '@/shared/auth/AuthProvider';
+import { setActiveChat } from '@/shared/push/usePush';
 import {
   chatKeys,
   isWaitingForReply,
@@ -34,6 +35,12 @@ export default function ChatScreen() {
   useEffect(() => {
     markConversationRead(id).then(() => qc.invalidateQueries({ queryKey: chatKeys.list(userId) }));
   }, [id, count, userId, qc]);
+
+  // 正在看这个会话时，它的新消息不再弹推送横幅
+  useEffect(() => {
+    setActiveChat(id);
+    return () => setActiveChat(null);
+  }, [id]);
 
   if (convo.isLoading || messages.isLoading) return <Loading />;
 

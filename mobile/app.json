@@ -28,7 +28,14 @@
       "expo-router",
       "expo-status-bar",
       "expo-sqlite",
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-notifications",
+        {
+          "color": "#8C4356",
+          "defaultChannel": "default"
+        }
+      ]
     ],
     "scheme": "tongpin",
     "experiments": {
